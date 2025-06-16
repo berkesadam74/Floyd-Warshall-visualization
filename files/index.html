@@ -8,6 +8,16 @@
   </head>
   <body>
     <h2>Floyd-Warshall vizualizácia</h2>
+    <div id="ovladanie">
+      <button id="btn-vrchol">Pridať vrchol</button>
+      <button id="btn-hrana">Pridať hranu</button>
+      <button id="btn-fw">Spustiť Floyd-Warshall</button>
+      <button id="btn-reset">Reset</button>
+      <div class="checkbox-container">
+        <input type="checkbox" id="vizualizacia-checkbox" checked />
+        <label for="vizualizacia-checkbox">Vizualizovať krok za krokom</label>
+      </div>
+    </div>
     <canvas id="graf" width="600" height="400"></canvas>
     <div id="matica"></div>
     <script src="script.js"></script>
