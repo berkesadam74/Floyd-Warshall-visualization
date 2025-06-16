@@ -105,6 +105,13 @@ function nastavAktivnyRezim(rezimNovy) {
   }
 }
 
+function resetujGraf() {
+  vrcholy = [];
+  hrany = [];
+  oznacene = [];
+  draw();
+}
+
 document.getElementById("btn-vrchol").addEventListener("click", function () {
   nastavAktivnyRezim("vrchol");
 });
@@ -112,6 +119,8 @@ document.getElementById("btn-vrchol").addEventListener("click", function () {
 document.getElementById("btn-hrana").addEventListener("click", function () {
   nastavAktivnyRezim("hrana");
 });
+
+document.getElementById("btn-reset").addEventListener("click", resetujGraf);
 
 // Pridanie vrcholu alebo hrany
 canvas.addEventListener("click", function (e) {
