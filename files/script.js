@@ -67,7 +67,7 @@ function draw() {
 
     ctx.beginPath();
     ctx.arc(v.x, v.y, 20, 0, 2 * Math.PI);
-    ctx.fillStyle = jeOznaceny ? "#ffe066" : "#ffd700";
+    ctx.fillStyle = jeOznaceny ? "#f2fedc" : "#ffd700";
     ctx.fill();
     ctx.strokeStyle = "#333";
     ctx.lineWidth = 2;
@@ -148,6 +148,65 @@ canvas.addEventListener("click", function (e) {
   }
   draw();
 });
+
+document
+  .getElementById("btn-fw")
+  .addEventListener("click", spustiFloydWarshall);
+
+function zobrazMaticu(matica) {
+  let n = matica.length;
+  let html = "<table style='margin:auto; border-collapse:collapse;'>";
+  html += "<tr><th></th>";
+  for (let j = 0; j < n; j++) html += `<th style="padding:3px;">${j}</th>`;
+  html += "</tr>";
+  for (let i = 0; i < n; i++) {
+    html += `<tr><th style="padding:10px;">${i}</th>`;
+    for (let j = 0; j < n; j++) {
+      let val = matica[i][j] === Infinity ? "&infin;" : matica[i][j];
+      html += `<td style="border:1px solid #ccc; padding:6px 10px; min-width:30px;">${val}</td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</table>";
+  document.getElementById("matica").innerHTML = html;
+}
+
+function spustiFloydWarshall() {
+  let pocetVrcholov = vrcholy.length;
+  if (pocetVrcholov === 0) {
+    document.getElementById("matica").innerHTML = "Graf je prázdny.";
+    return;
+  }
+
+  // inicializacia matice vzsialenosti
+  let vzdialenosti = Array.from({ length: pocetVrcholov }, () =>
+    Array(pocetVrcholov).fill(Infinity),
+  );
+  // Nuly na diagonalu
+  for (let i = 0; i < pocetVrcholov; i++) vzdialenosti[i][i] = 0;
+
+  // Nastavime vahy priamych hran
+  for (let i = 0; i < hrany.length; i++) {
+    let hrana = hrany[i];
+    let od = hrana[0];
+    let do_ = hrana[1];
+    let vaha = hrana[2];
+    vzdialenosti[od][do_] = vaha;
+  }
+
+  // Floyd-Warshall algoritmus
+  for (let k = 0; k < pocetVrcholov; k++) {
+    for (let i = 0; i < pocetVrcholov; i++) {
+      for (let j = 0; j < pocetVrcholov; j++) {
+        if (vzdialenosti[i][k] + vzdialenosti[k][j] < vzdialenosti[i][j]) {
+          vzdialenosti[i][j] = vzdialenosti[i][k] + vzdialenosti[k][j];
+        }
+      }
+    }
+  }
+
+  zobrazMaticu(vzdialenosti);
+}
 
 nastavAktivnyRezim("vrchol");
 draw();
