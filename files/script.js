@@ -6,6 +6,7 @@ let hrany = [];
 let oznacene = [];
 
 let rezim = "vrchol";
+let vizStop = false;
 
 let jeTiahnuty = false;
 let bolTiahnuty = false;
@@ -172,6 +173,8 @@ function resetujGraf() {
   vrcholy = [];
   hrany = [];
   oznacene = [];
+  document.getElementById("matica").innerHTML = "";
+  document.getElementById("fw-matrix-display").innerHTML = "";
   draw();
 }
 
@@ -274,6 +277,7 @@ function spustiFloydWarshall() {
 }
 
 async function vizualizujFloydWarshall() {
+  vizStop = false;
   let n = vrcholy.length;
   if (n === 0) {
     document.getElementById("fw-status").textContent = "Graf je prázdny.";
@@ -293,13 +297,16 @@ async function vizualizujFloydWarshall() {
   await sleep(1000);
 
   for (let k = 0; k < n; k++) {
+    if (vizStop) return;
     document.getElementById("fw-status").textContent =
       `Sprostredkujúci vrchol k = ${k}`;
     zobrazMaticuOverlay(vzdialenosti, { k });
     await sleep(1500);
 
     for (let i = 0; i < n; i++) {
+      if (vizStop) return;
       for (let j = 0; j < n; j++) {
+        if (vizStop) return;
         if (i === k || j === k) continue;
         let pred = vzdialenosti[i][j];
         let cezK = vzdialenosti[i][k] + vzdialenosti[k][j];
@@ -353,6 +360,8 @@ function zobrazMaticuOverlay(matica, highlight = {}) {
 document
   .getElementById("fw-close-button")
   .addEventListener("click", function () {
+    vizStop = true;
+    document.getElementById("fw-matrix-display").innerHTML = "";
     document.getElementById("fw-overlay").style.display = "none";
   });
 
