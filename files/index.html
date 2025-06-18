@@ -19,7 +19,18 @@
       </div>
     </div>
     <canvas id="graf" width="600" height="400"></canvas>
-    <div id="matica"></div>
+    <div id="matica-cast">
+      <h2>Matica vzdialeností</h2>
+      <div id="matica"></div>
+    </div>
+    <div id="fw-overlay" style="display: none">
+      <div id="fw-content">
+        <button id="fw-close-button">&times;</button>
+        <h2>Floyd-Warshall krok za krokom</h2>
+        <div id="fw-status">Inicializácia...</div>
+        <div id="fw-matrix-display"></div>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

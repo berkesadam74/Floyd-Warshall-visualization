@@ -7,6 +7,10 @@ let oznacene = [];
 
 let rezim = "vrchol";
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function nakresliSipku(zx, zy, dx, dy, farba) {
   ctx.beginPath();
   ctx.moveTo(zx, zy);
@@ -198,6 +202,7 @@ function spustiFloydWarshall() {
   for (let k = 0; k < pocetVrcholov; k++) {
     for (let i = 0; i < pocetVrcholov; i++) {
       for (let j = 0; j < pocetVrcholov; j++) {
+        if (i === k || j === k || i === j) continue;
         if (vzdialenosti[i][k] + vzdialenosti[k][j] < vzdialenosti[i][j]) {
           vzdialenosti[i][j] = vzdialenosti[i][k] + vzdialenosti[k][j];
         }
@@ -207,6 +212,89 @@ function spustiFloydWarshall() {
 
   zobrazMaticu(vzdialenosti);
 }
+
+async function vizualizujFloydWarshall() {
+  let n = vrcholy.length;
+  if (n === 0) {
+    document.getElementById("fw-status").textContent = "Graf je prázdny.";
+    document.getElementById("fw-overlay").style.display = "flex";
+    return;
+  }
+
+  let vzdialenosti = Array.from({ length: n }, () => Array(n).fill(Infinity));
+  for (let i = 0; i < n; i++) vzdialenosti[i][i] = 0;
+  for (let [od, do_, vaha] of hrany) {
+    vzdialenosti[od][do_] = vaha;
+  }
+
+  document.getElementById("fw-overlay").style.display = "flex";
+  document.getElementById("fw-status").textContent = "Inicializácia matice...";
+  zobrazMaticuOverlay(vzdialenosti);
+  await sleep(1000);
+
+  for (let k = 0; k < n; k++) {
+    document.getElementById("fw-status").textContent =
+      `Sprostredkujúci vrchol k = ${k}`;
+    zobrazMaticuOverlay(vzdialenosti, { k });
+    await sleep(1500);
+
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (i === k || j === k) continue;
+        let pred = vzdialenosti[i][j];
+        let cezK = vzdialenosti[i][k] + vzdialenosti[k][j];
+        let aktualizovane = false;
+        if (cezK < pred) {
+          vzdialenosti[i][j] = cezK;
+          aktualizovane = true;
+        }
+        zobrazMaticuOverlay(vzdialenosti, { k, i, j, aktualizovane });
+        document.getElementById("fw-status").textContent =
+          `Porovnávam: d[${i}][${j}] = min(${pred}, ${vzdialenosti[i][k]} + ${vzdialenosti[k][j]})`;
+        await sleep(1000);
+      }
+    }
+  }
+  document.getElementById("fw-status").textContent = "Hotovo!";
+}
+
+document.getElementById("btn-fw").addEventListener("click", function () {
+  if (document.getElementById("vizualizacia-checkbox").checked) {
+    vizualizujFloydWarshall();
+  } else {
+    spustiFloydWarshall();
+  }
+});
+
+function zobrazMaticuOverlay(matica, highlight = {}) {
+  let n = matica.length;
+  let html = "<table style='margin:auto; border-collapse:collapse;'>";
+  html += "<tr><th></th>";
+  for (let j = 0; j < n; j++) html += `<th>${j}</th>`;
+  html += "</tr>";
+  for (let i = 0; i < n; i++) {
+    html += `<tr><th style="padding:10px;">${i}</th>`;
+    for (let j = 0; j < n; j++) {
+      let val = matica[i][j] === Infinity ? "&infin;" : matica[i][j];
+      let style = "";
+      if (highlight.k === i || highlight.k === j) style += "background:#eee;";
+      if (highlight.i === i && highlight.j === j)
+        style += highlight.aktualizovane
+          ? "background:#b6fcb6;"
+          : "background:#fcb6b6;";
+      html += `<td style="border:1px solid #ccc; padding:6px 10px; min-width:30px;${style}">${val}</td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</table>";
+  document.getElementById("fw-matrix-display").innerHTML = html;
+}
+
+document
+  .getElementById("fw-close-button")
+  .addEventListener("click", function () {
+    document.getElementById("fw-overlay").style.display = "none";
+  });
 
 nastavAktivnyRezim("vrchol");
 draw();
