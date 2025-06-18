@@ -7,6 +7,65 @@ let oznacene = [];
 
 let rezim = "vrchol";
 
+let jeTiahnuty = false;
+let bolTiahnuty = false;
+let tiahniIndex = null;
+let offsetX = 0,
+  offsetY = 0;
+
+canvas.addEventListener("mousedown", function (e) {
+  if (e.button !== 0 || rezim !== "vrchol") {
+    return;
+  }
+  let rect = canvas.getBoundingClientRect();
+  let x = e.clientX - rect.left;
+  let y = e.clientY - rect.top;
+  let idx = klikNaVrchol(x, y);
+  bolTiahnuty = false;
+  if (idx !== null) {
+    jeTiahnuty = true;
+    tiahniIndex = idx;
+    offsetX = x - vrcholy[idx].x;
+    offsetY = y - vrcholy[idx].y;
+  }
+});
+
+canvas.addEventListener("mousemove", function (e) {
+  if (!jeTiahnuty) return;
+  let rect = canvas.getBoundingClientRect();
+  let x = e.clientX - rect.left;
+  let y = e.clientY - rect.top;
+  vrcholy[tiahniIndex].x = x - offsetX;
+  vrcholy[tiahniIndex].y = y - offsetY;
+  bolTiahnuty = true;
+  draw();
+});
+
+canvas.addEventListener("mouseup", function (e) {
+  if (jeTiahnuty) {
+    jeTiahnuty = false;
+    tiahniIndex = null;
+  }
+});
+
+canvas.addEventListener("contextmenu", function (e) {
+  e.preventDefault();
+  let rect = canvas.getBoundingClientRect();
+  let x = e.clientX - rect.left;
+  let y = e.clientY - rect.top;
+  let idx = klikNaVrchol(x, y);
+  if (idx !== null) {
+    vrcholy.splice(idx, 1);
+    hrany = hrany.filter(([od, do_]) => od !== idx && do_ !== idx);
+    hrany = hrany.map(([od, do_, vaha]) => [
+      od > idx ? od - 1 : od,
+      do_ > idx ? do_ - 1 : do_,
+      vaha,
+    ]);
+    draw();
+  }
+});
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -133,6 +192,7 @@ canvas.addEventListener("click", function (e) {
   let y = e.clientY - rect.top;
 
   if (rezim === "vrchol") {
+    if (bolTiahnuty) return;
     vrcholy.push({ x, y });
     oznacene = [];
   } else if (rezim === "hrana") {
