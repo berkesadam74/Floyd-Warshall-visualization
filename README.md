@@ -61,8 +61,7 @@
 /files
   ├── index.html
   ├── style.css
-  ├── script.js
-  └── demo.gif
+  └── script.js
 ```
 
 ---
