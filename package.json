@@ -1,0 +1,41 @@
+{
+  "name": "floyd-warshall-visualizer",
+  "version": "1.0.0",
+  "description": "Interactive web application for visualizing the Floyd-Warshall algorithm on directed weighted graphs",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server --port=3000",
+    "build": "echo 'No build step needed for vanilla JS project'",
+    "test": "npx jest",
+    "lint": "npx eslint src/ --fix",
+    "format": "npx prettier --write .",
+    "deploy": "gh-pages -d .",
+    "predeploy": "npm run lint && npm run format"
+  },
+  "keywords": [
+    "floyd-warshall",
+    "algorithm",
+    "visualization",
+    "graph-theory",
+    "shortest-path",
+    "javascript",
+    "canvas"
+  ],
+  "author": "Adam Berkeš",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "gh-pages": "^6.0.0",
+    "jest": "^29.0.0",
+    "live-server": "^1.2.2",
+    "prettier": "^3.0.0",
+    "serve": "^14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/berkesadam74/Floyd-Warshall-visualization"
+  },
+  "homepage": "https://berkesadam74.github.io/Floyd-Warshall-visualization/"
+}
+

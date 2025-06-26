@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Interactive Floyd-Warshall algorithm visualizer for finding shortest paths in weighted directed graphs" />
+    <meta name="keywords" content="floyd-warshall, algorithm, graph theory, shortest path, visualization" />
+    <meta name="author" content="Adam Berkeš" />
+    <title>Floyd-Warshall Algorithm Visualizer</title>
+    <link href="src/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h1>Floyd-Warshall Algorithm Visualizer</h1>
+      <p>Interactive visualization of the Floyd-Warshall algorithm for finding shortest paths in weighted directed graphs</p>
+    </header>
+    
+    <main>
+      <div id="controls">
+        <button id="btn-vertex">Add Vertex</button>
+        <button id="btn-edge">Add Edge</button>
+        <button id="btn-fw">Run Floyd-Warshall</button>
+        <button id="btn-reset">Reset</button>
+        <div class="checkbox-container">
+          <input type="checkbox" id="visualization-checkbox" checked />
+          <label for="visualization-checkbox">Step-by-step visualization</label>
+        </div>
+      </div>
+      
+      <canvas id="graph" width="600" height="400" aria-label="Graph visualization canvas"></canvas>
+      
+      <div id="matrix-section">
+        <h2>Distance Matrix</h2>
+        <div id="matrix"></div>
+      </div>
+    </main>
+    
+    <div id="fw-overlay" style="display: none" role="dialog" aria-labelledby="fw-title">
+      <div id="fw-content">
+        <button id="fw-close-button" aria-label="Close visualization">&times;</button>
+        <h2 id="fw-title">Floyd-Warshall Step by Step</h2>
+        <div id="fw-status">Initializing...</div>
+        <div id="fw-matrix-display"></div>
+      </div>
+    </div>
+    
+    <script src="src/script.js"></script>
+  </body>
+</html>
